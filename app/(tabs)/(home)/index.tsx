@@ -336,14 +336,28 @@ export default function HomeScreen() {
 
       <View style={commonStyles.card}>
         <Text style={commonStyles.cardTitle}>Quick Actions</Text>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/attendance')}
+        >
           <IconSymbol name="checkmark.circle" size={24} color={colors.primary} />
           <Text style={styles.actionText}>Mark Attendance</Text>
           <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <IconSymbol name="doc.text" size={24} color={colors.primary} />
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/materials')}
+        >
+          <IconSymbol name="doc.text" size={24} color={colors.secondary} />
           <Text style={styles.actionText}>Upload Materials</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/schedule')}
+        >
+          <IconSymbol name="calendar" size={24} color={colors.accent} />
+          <Text style={styles.actionText}>View Full Schedule</Text>
           <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
@@ -394,6 +408,34 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
+
+      <View style={commonStyles.card}>
+        <Text style={commonStyles.cardTitle}>Quick Actions</Text>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/progress')}
+        >
+          <IconSymbol name="chart.bar.fill" size={24} color={colors.primary} />
+          <Text style={styles.actionText}>View Progress Report</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/materials')}
+        >
+          <IconSymbol name="doc.text.fill" size={24} color={colors.secondary} />
+          <Text style={styles.actionText}>Study Materials</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/schedule')}
+        >
+          <IconSymbol name="calendar" size={24} color={colors.accent} />
+          <Text style={styles.actionText}>My Schedule</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 
@@ -407,7 +449,11 @@ export default function HomeScreen() {
       <View style={commonStyles.card}>
         <Text style={commonStyles.cardTitle}>Your Children</Text>
         {mockStudents.slice(0, 2).map((student) => (
-          <TouchableOpacity key={student.id} style={styles.studentItem}>
+          <TouchableOpacity 
+            key={student.id} 
+            style={styles.studentItem}
+            onPress={() => router.push('/(tabs)/students')}
+          >
             <View style={styles.studentAvatar}>
               <IconSymbol name="person.fill" size={24} color={colors.card} />
             </View>
@@ -437,6 +483,34 @@ export default function HomeScreen() {
         >
           <IconSymbol name="arrow.up.doc.fill" size={24} color={colors.primary} />
           <Text style={styles.actionText}>Upload Proof of Payment</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={commonStyles.card}>
+        <Text style={commonStyles.cardTitle}>Quick Actions</Text>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/progress')}
+        >
+          <IconSymbol name="chart.bar.fill" size={24} color={colors.primary} />
+          <Text style={styles.actionText}>View Child&apos;s Progress</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/schedule')}
+        >
+          <IconSymbol name="calendar" size={24} color={colors.secondary} />
+          <Text style={styles.actionText}>View Schedule</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/notifications')}
+        >
+          <IconSymbol name="bell.fill" size={24} color={colors.accent} />
+          <Text style={styles.actionText}>View Notifications</Text>
           <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>

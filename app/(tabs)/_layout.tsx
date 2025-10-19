@@ -71,6 +71,12 @@ export default function TabLayout() {
           label: 'Schedule',
         },
         {
+          name: 'materials',
+          route: '/(tabs)/materials',
+          icon: 'doc.text.fill',
+          label: 'Materials',
+        },
+        {
           name: 'profile',
           route: '/(tabs)/profile',
           icon: 'person.fill',
@@ -85,6 +91,12 @@ export default function TabLayout() {
           route: '/(tabs)/schedule',
           icon: 'calendar',
           label: 'Schedule',
+        },
+        {
+          name: 'materials',
+          route: '/(tabs)/materials',
+          icon: 'doc.text.fill',
+          label: 'Materials',
         },
         {
           name: 'progress',
@@ -171,6 +183,8 @@ export default function TabLayout() {
         <Stack.Screen name="payments" />
         <Stack.Screen name="notifications" />
         <Stack.Screen name="settings" />
+        <Stack.Screen name="attendance" />
+        <Stack.Screen name="materials" />
         <Stack.Screen name="profile" />
       </Stack>
       <FloatingTabBar tabs={tabs} />
