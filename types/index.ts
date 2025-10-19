@@ -85,6 +85,19 @@ export interface Payment {
   status: 'paid' | 'pending' | 'overdue';
   method?: string;
   receiptNumber?: string;
+  proofOfPayment?: ProofOfPayment;
+}
+
+export interface ProofOfPayment {
+  id: string;
+  paymentId: string;
+  fileName: string;
+  fileUri: string;
+  fileType: string;
+  uploadDate: string;
+  uploadedBy: string;
+  status: 'pending' | 'approved' | 'rejected';
+  notes?: string;
 }
 
 export interface Message {
@@ -114,4 +127,38 @@ export interface ProfileNotification {
     qualifications?: string;
     department?: string;
   };
+}
+
+export interface AdminNotification {
+  id: string;
+  type: 'admin_message' | 'payment_reminder' | 'general_announcement';
+  title: string;
+  message: string;
+  recipients: string[]; // Array of parent IDs or 'all'
+  sentBy: string;
+  sentDate: string;
+  priority: 'low' | 'medium' | 'high';
+  read: boolean;
+}
+
+export interface AppSettings {
+  academyName: string;
+  contactEmail: string;
+  contactPhone: string;
+  address: string;
+  currency: string;
+  currencySymbol: string;
+  dateFormat: string;
+  timeFormat: string;
+  timezone: string;
+  language: string;
+  country: string;
+  taxNumber: string;
+  bankName: string;
+  bankAccountNumber: string;
+  bankBranchCode: string;
+  paymentMethods: string[];
+  academyLogo?: string;
+  termsAndConditions?: string;
+  privacyPolicy?: string;
 }

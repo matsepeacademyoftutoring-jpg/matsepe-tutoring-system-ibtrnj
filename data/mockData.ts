@@ -1,5 +1,5 @@
 
-import { Student, Tutor, Class, Attendance, Assessment, Payment, ProfileNotification } from '@/types';
+import { Student, Tutor, Class, Attendance, Assessment, Payment, ProfileNotification, AppSettings, ProofOfPayment, AdminNotification } from '@/types';
 
 export const mockStudents: Student[] = [
   {
@@ -202,9 +202,22 @@ export const mockPayments: Payment[] = [
     id: '3',
     studentId: '3',
     amount: 1800,
-    date: '2024-03-01',
+    date: '2024-03-05',
     type: 'tuition',
     status: 'pending',
+  },
+];
+
+export const mockProofOfPayments: ProofOfPayment[] = [
+  {
+    id: '1',
+    paymentId: '1',
+    fileName: 'payment_proof_march.pdf',
+    fileUri: 'file://mock/payment_proof_march.pdf',
+    fileType: 'application/pdf',
+    uploadDate: '2024-03-01',
+    uploadedBy: 'sarah.molefe@email.com',
+    status: 'approved',
   },
 ];
 
@@ -216,7 +229,7 @@ export const mockProfileNotifications: ProfileNotification[] = [
     userName: 'Zanele Mthembu',
     userEmail: 'zanele.mthembu@email.com',
     userPhone: '0824567890',
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     read: false,
     additionalInfo: {
       grade: 'Grade 9',
@@ -230,7 +243,7 @@ export const mockProfileNotifications: ProfileNotification[] = [
     userName: 'David Mokoena',
     userEmail: 'david.mokoena@email.com',
     userPhone: '0835678901',
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
+    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
     read: false,
     additionalInfo: {
       qualifications: 'BSc Mathematics, 3 years teaching experience',
@@ -244,7 +257,7 @@ export const mockProfileNotifications: ProfileNotification[] = [
     userName: 'Patricia Ndlovu',
     userEmail: 'patricia.ndlovu@email.com',
     userPhone: '0826789012',
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
     read: true,
   },
   {
@@ -254,7 +267,7 @@ export const mockProfileNotifications: ProfileNotification[] = [
     userName: 'Mpho Sithole',
     userEmail: 'mpho.sithole@email.com',
     userPhone: '0827890123',
-    timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
     read: true,
     additionalInfo: {
       grade: 'Grade 11',
@@ -262,3 +275,43 @@ export const mockProfileNotifications: ProfileNotification[] = [
     },
   },
 ];
+
+export const mockAdminNotifications: AdminNotification[] = [
+  {
+    id: '1',
+    type: 'payment_reminder',
+    title: 'March Fees Due',
+    message: 'This is a reminder that March tuition fees are due by the 5th. Please ensure payment is made on time.',
+    recipients: ['all'],
+    sentBy: 'admin@matsepe.com',
+    sentDate: '2024-03-01',
+    priority: 'high',
+    read: false,
+  },
+];
+
+export let appSettings: AppSettings = {
+  academyName: 'Matsepe Academy of Tutoring',
+  contactEmail: 'info@matsepeacademy.co.za',
+  contactPhone: '011 234 5678',
+  address: '123 Main Road, Johannesburg, Gauteng, 2000',
+  currency: 'ZAR',
+  currencySymbol: 'R',
+  dateFormat: 'DD/MM/YYYY',
+  timeFormat: '24h',
+  timezone: 'Africa/Johannesburg',
+  language: 'English',
+  country: 'South Africa',
+  taxNumber: '9876543210',
+  bankName: 'Standard Bank',
+  bankAccountNumber: '1234567890',
+  bankBranchCode: '051001',
+  paymentMethods: ['Bank Transfer', 'Cash', 'EFT', 'SnapScan', 'Zapper'],
+  termsAndConditions: 'Standard terms and conditions apply.',
+  privacyPolicy: 'We respect your privacy and protect your personal information.',
+};
+
+export const updateAppSettings = (newSettings: Partial<AppSettings>) => {
+  appSettings = { ...appSettings, ...newSettings };
+  console.log('Settings updated:', appSettings);
+};

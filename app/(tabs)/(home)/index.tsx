@@ -237,20 +237,34 @@ export default function HomeScreen() {
         <Text style={commonStyles.cardTitle}>Quick Actions</Text>
         <TouchableOpacity
           style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/notifications')}
+        >
+          <IconSymbol name="bell.badge.fill" size={24} color={colors.primary} />
+          <Text style={styles.actionText}>Send Notification to Parents</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/payments')}
+        >
+          <IconSymbol name="creditcard.fill" size={24} color={colors.accent} />
+          <Text style={styles.actionText}>Manage Payments</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => router.push('/(tabs)/settings')}
+        >
+          <IconSymbol name="gearshape.fill" size={24} color={colors.secondary} />
+          <Text style={styles.actionText}>Academy Settings</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.actionButton}
           onPress={() => router.push('/create-profile')}
         >
           <IconSymbol name="person.badge.plus" size={24} color={colors.primary} />
           <Text style={styles.actionText}>Register New Profile</Text>
-          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <IconSymbol name="calendar.badge.plus" size={24} color={colors.primary} />
-          <Text style={styles.actionText}>Schedule New Class</Text>
-          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton}>
-          <IconSymbol name="chart.bar.doc.horizontal" size={24} color={colors.primary} />
-          <Text style={styles.actionText}>Generate Reports</Text>
           <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
@@ -411,12 +425,20 @@ export default function HomeScreen() {
         <View style={styles.paymentItem}>
           <View style={styles.paymentInfo}>
             <Text style={commonStyles.text}>March 2024 Tuition</Text>
-            <Text style={commonStyles.textSecondary}>Due: March 31, 2024</Text>
+            <Text style={commonStyles.textSecondary}>Due: 31/03/2024</Text>
           </View>
-          <View style={[styles.paymentBadge, { backgroundColor: colors.success }]}>
-            <Text style={[styles.paymentBadgeText, { color: colors.card }]}>Paid</Text>
+          <View style={[styles.paymentBadge, { backgroundColor: colors.warning }]}>
+            <Text style={[styles.paymentBadgeText, { color: colors.card }]}>Pending</Text>
           </View>
         </View>
+        <TouchableOpacity
+          style={[styles.actionButton, { marginTop: 12 }]}
+          onPress={() => router.push('/(tabs)/payments')}
+        >
+          <IconSymbol name="arrow.up.doc.fill" size={24} color={colors.primary} />
+          <Text style={styles.actionText}>Upload Proof of Payment</Text>
+          <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

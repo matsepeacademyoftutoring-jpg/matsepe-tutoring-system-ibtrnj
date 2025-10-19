@@ -37,16 +37,22 @@ export default function TabLayout() {
           label: 'Tutors',
         },
         {
-          name: 'schedule',
-          route: '/(tabs)/schedule',
-          icon: 'calendar',
-          label: 'Schedule',
+          name: 'payments',
+          route: '/(tabs)/payments',
+          icon: 'creditcard.fill',
+          label: 'Payments',
         },
         {
-          name: 'profile',
-          route: '/(tabs)/profile',
-          icon: 'person.fill',
-          label: 'Profile',
+          name: 'notifications',
+          route: '/(tabs)/notifications',
+          icon: 'bell.fill',
+          label: 'Notify',
+        },
+        {
+          name: 'settings',
+          route: '/(tabs)/settings',
+          icon: 'gearshape.fill',
+          label: 'Settings',
         },
       ];
     } else if (user?.role === 'tutor') {
@@ -103,6 +109,12 @@ export default function TabLayout() {
           label: 'Children',
         },
         {
+          name: 'payments',
+          route: '/(tabs)/payments',
+          icon: 'creditcard.fill',
+          label: 'Payments',
+        },
+        {
           name: 'progress',
           route: '/(tabs)/progress',
           icon: 'chart.bar.fill',
@@ -156,6 +168,9 @@ export default function TabLayout() {
         <Stack.Screen name="tutors" />
         <Stack.Screen name="schedule" />
         <Stack.Screen name="progress" />
+        <Stack.Screen name="payments" />
+        <Stack.Screen name="notifications" />
+        <Stack.Screen name="settings" />
         <Stack.Screen name="profile" />
       </Stack>
       <FloatingTabBar tabs={tabs} />
