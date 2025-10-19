@@ -98,3 +98,20 @@ export interface Message {
   date: string;
   read: boolean;
 }
+
+export interface ProfileNotification {
+  id: string;
+  type: 'profile_created';
+  role: UserRole;
+  userName: string;
+  userEmail: string;
+  userPhone?: string;
+  timestamp: string;
+  read: boolean;
+  additionalInfo?: {
+    grade?: string;
+    subjects?: string;
+    qualifications?: string;
+    department?: string;
+  };
+}

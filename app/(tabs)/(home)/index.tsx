@@ -1,20 +1,190 @@
 
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-import { Stack } from 'expo-router';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Platform, Modal } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { colors, commonStyles } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
-import { mockStudents, mockClasses, mockPayments } from '@/data/mockData';
+import { mockStudents, mockClasses, mockPayments, mockProfileNotifications } from '@/data/mockData';
+import { ProfileNotification } from '@/types';
 
 export default function HomeScreen() {
   const { user } = useAuth();
+  const router = useRouter();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState(mockProfileNotifications);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const formatTimeAgo = (timestamp: string): string => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffMs = now.getTime() - time.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 60) {
+      return `${diffMins} minute${diffMins !== 1 ? 's' : ''} ago`;
+    } else if (diffHours < 24) {
+      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+    } else {
+      return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+    }
+  };
+
+  const markAsRead = (notificationId: string) => {
+    setNotifications(prev =>
+      prev.map(n => (n.id === notificationId ? { ...n, read: true } : n))
+    );
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const getRoleIcon = (role: string): string => {
+    switch (role) {
+      case 'student':
+        return 'person.fill';
+      case 'tutor':
+        return 'book.fill';
+      case 'parent':
+        return 'person.2.fill';
+      case 'admin':
+        return 'shield.fill';
+      default:
+        return 'person.fill';
+    }
+  };
+
+  const getRoleColor = (role: string): string => {
+    switch (role) {
+      case 'student':
+        return colors.primary;
+      case 'tutor':
+        return colors.secondary;
+      case 'parent':
+        return colors.accent;
+      case 'admin':
+        return colors.warning;
+      default:
+        return colors.primary;
+    }
+  };
+
+  const renderNotificationModal = () => (
+    <Modal
+      visible={showNotifications}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={() => setShowNotifications(false)}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalHeader}>
+          <Text style={commonStyles.title}>Profile Notifications</Text>
+          <TouchableOpacity onPress={() => setShowNotifications(false)}>
+            <IconSymbol name="xmark.circle.fill" size={28} color={colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
+
+        {unreadCount > 0 && (
+          <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead}>
+            <IconSymbol name="checkmark.circle" size={20} color={colors.primary} />
+            <Text style={styles.markAllText}>Mark all as read</Text>
+          </TouchableOpacity>
+        )}
+
+        <ScrollView style={styles.notificationsList}>
+          {notifications.length === 0 ? (
+            <View style={styles.emptyState}>
+              <IconSymbol name="bell.slash" size={48} color={colors.textSecondary} />
+              <Text style={[commonStyles.text, { marginTop: 12 }]}>No notifications</Text>
+            </View>
+          ) : (
+            notifications.map((notification) => (
+              <TouchableOpacity
+                key={notification.id}
+                style={[
+                  styles.notificationItem,
+                  !notification.read && styles.notificationUnread,
+                ]}
+                onPress={() => markAsRead(notification.id)}
+              >
+                <View
+                  style={[
+                    styles.notificationIcon,
+                    { backgroundColor: getRoleColor(notification.role) },
+                  ]}
+                >
+                  <IconSymbol
+                    name={getRoleIcon(notification.role) as any}
+                    size={24}
+                    color={colors.card}
+                  />
+                </View>
+
+                <View style={styles.notificationContent}>
+                  <View style={styles.notificationHeader}>
+                    <Text style={styles.notificationTitle}>
+                      New {notification.role} profile created
+                    </Text>
+                    {!notification.read && <View style={styles.unreadDot} />}
+                  </View>
+
+                  <Text style={commonStyles.text}>{notification.userName}</Text>
+                  <Text style={commonStyles.textSecondary}>{notification.userEmail}</Text>
+
+                  {notification.additionalInfo && (
+                    <View style={styles.additionalInfo}>
+                      {notification.additionalInfo.grade && (
+                        <Text style={styles.infoText}>
+                          Grade: {notification.additionalInfo.grade}
+                        </Text>
+                      )}
+                      {notification.additionalInfo.subjects && (
+                        <Text style={styles.infoText}>
+                          Subjects: {notification.additionalInfo.subjects}
+                        </Text>
+                      )}
+                      {notification.additionalInfo.qualifications && (
+                        <Text style={styles.infoText}>
+                          {notification.additionalInfo.qualifications}
+                        </Text>
+                      )}
+                    </View>
+                  )}
+
+                  <Text style={styles.notificationTime}>
+                    {formatTimeAgo(notification.timestamp)}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          )}
+        </ScrollView>
+      </View>
+    </Modal>
+  );
 
   const renderAdminDashboard = () => (
     <ScrollView style={styles.scrollView} contentContainerStyle={commonStyles.scrollContent}>
       <View style={styles.welcomeSection}>
-        <Text style={commonStyles.title}>Welcome, {user?.name}!</Text>
-        <Text style={commonStyles.textSecondary}>Admin Dashboard</Text>
+        <View>
+          <Text style={commonStyles.title}>Welcome, {user?.name}!</Text>
+          <Text style={commonStyles.textSecondary}>Admin Dashboard</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.notificationButton}
+          onPress={() => setShowNotifications(true)}
+        >
+          <IconSymbol name="bell.fill" size={24} color={colors.primary} />
+          {unreadCount > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{unreadCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
 
       <View style={styles.statsGrid}>
@@ -43,11 +213,34 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      {unreadCount > 0 && (
+        <TouchableOpacity
+          style={[commonStyles.card, styles.notificationCard]}
+          onPress={() => setShowNotifications(true)}
+        >
+          <View style={styles.notificationCardHeader}>
+            <IconSymbol name="bell.badge.fill" size={28} color={colors.primary} />
+            <View style={styles.notificationCardContent}>
+              <Text style={styles.notificationCardTitle}>
+                {unreadCount} New Profile{unreadCount !== 1 ? 's' : ''} Created
+              </Text>
+              <Text style={commonStyles.textSecondary}>
+                Tap to view and approve new registrations
+              </Text>
+            </View>
+            <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
+          </View>
+        </TouchableOpacity>
+      )}
+
       <View style={commonStyles.card}>
         <Text style={commonStyles.cardTitle}>Quick Actions</Text>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => router.push('/create-profile')}
+        >
           <IconSymbol name="person.badge.plus" size={24} color={colors.primary} />
-          <Text style={styles.actionText}>Register New Student</Text>
+          <Text style={styles.actionText}>Register New Profile</Text>
           <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton}>
@@ -86,6 +279,8 @@ export default function HomeScreen() {
           </View>
         </View>
       </View>
+
+      {renderNotificationModal()}
     </ScrollView>
   );
 
@@ -218,8 +413,8 @@ export default function HomeScreen() {
             <Text style={commonStyles.text}>March 2024 Tuition</Text>
             <Text style={commonStyles.textSecondary}>Due: March 31, 2024</Text>
           </View>
-          <View style={[styles.badge, { backgroundColor: colors.success }]}>
-            <Text style={[styles.badgeText, { color: colors.card }]}>Paid</Text>
+          <View style={[styles.paymentBadge, { backgroundColor: colors.success }]}>
+            <Text style={[styles.paymentBadgeText, { color: colors.card }]}>Paid</Text>
           </View>
         </View>
       </View>
@@ -264,6 +459,30 @@ const styles = StyleSheet.create({
   },
   welcomeSection: {
     marginBottom: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
+  notificationButton: {
+    position: 'relative',
+    padding: 8,
+  },
+  badge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: colors.error,
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 6,
+  },
+  badgeText: {
+    color: colors.card,
+    fontSize: 12,
+    fontWeight: '700',
   },
   statsGrid: {
     flexDirection: 'row',
@@ -288,6 +507,25 @@ const styles = StyleSheet.create({
     color: colors.card,
     marginTop: 4,
     textAlign: 'center',
+  },
+  notificationCard: {
+    backgroundColor: colors.highlight,
+    borderWidth: 2,
+    borderColor: colors.primary,
+  },
+  notificationCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  notificationCardContent: {
+    flex: 1,
+  },
+  notificationCardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
   },
   actionButton: {
     flexDirection: 'row',
@@ -392,13 +630,110 @@ const styles = StyleSheet.create({
   paymentInfo: {
     flex: 1,
   },
-  badge: {
+  paymentBadge: {
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
-  badgeText: {
+  paymentBadgeText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: Platform.OS === 'ios' ? 60 : 16,
+    backgroundColor: colors.card,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  markAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    marginHorizontal: 16,
+    marginTop: 12,
+    backgroundColor: colors.card,
+    borderRadius: 8,
+    gap: 8,
+  },
+  markAllText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  notificationsList: {
+    flex: 1,
+    padding: 16,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  notificationItem: {
+    flexDirection: 'row',
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  notificationUnread: {
+    backgroundColor: colors.highlight,
+    borderColor: colors.primary,
+  },
+  notificationIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  notificationTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.primary,
+    flex: 1,
+  },
+  unreadDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.error,
+    marginLeft: 8,
+  },
+  additionalInfo: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  infoText: {
+    fontSize: 13,
+    color: colors.textSecondary,
+    marginBottom: 2,
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 8,
   },
 });

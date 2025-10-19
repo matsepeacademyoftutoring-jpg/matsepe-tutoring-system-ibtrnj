@@ -1,37 +1,32 @@
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { colors, commonStyles, buttonStyles } from '@/styles/commonStyles';
 import { IconSymbol } from '@/components/IconSymbol';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      alert('Please enter both email and password');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const success = await login(email, password);
-      if (success) {
-        router.replace('/(tabs)/(home)');
-      } else {
-        alert('Login failed. Please try again.');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      alert('An error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
+    console.log('Login attempt with:', email);
+    const success = await login(email, password);
+    if (success) {
+      router.replace('/(tabs)/(home)');
     }
   };
 
@@ -47,105 +42,109 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
+    <KeyboardAvoidingView
+      style={commonStyles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.header}>
+        <View style={styles.container}>
           <View style={styles.logoContainer}>
-            <IconSymbol name="book.fill" size={60} color={colors.primary} />
-          </View>
-          <Text style={styles.title}>Matsepe Academy</Text>
-          <Text style={styles.subtitle}>Tutoring Management System</Text>
-        </View>
-
-        <View style={styles.formContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={commonStyles.label}>Email Address</Text>
-            <TextInput
-              style={commonStyles.input}
-              placeholder="Enter your email"
-              placeholderTextColor={colors.textSecondary}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+            <View style={styles.logoCircle}>
+              <IconSymbol name="book.fill" size={48} color={colors.card} />
+            </View>
+            <Text style={styles.logoText}>Matsepe Academy</Text>
+            <Text style={styles.logoSubtext}>of Tutoring</Text>
           </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={commonStyles.label}>Password</Text>
-            <TextInput
-              style={commonStyles.input}
-              placeholder="Enter your password"
-              placeholderTextColor={colors.textSecondary}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoCapitalize="none"
-            />
-          </View>
+          <View style={styles.formContainer}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Sign in to continue</Text>
 
-          <TouchableOpacity 
-            style={[buttonStyles.primary, styles.loginButton, isLoading && styles.disabledButton]}
-            onPress={handleLogin}
-            disabled={isLoading}
-          >
-            <Text style={commonStyles.buttonText}>
-              {isLoading ? 'Logging in...' : 'Login'}
-            </Text>
-          </TouchableOpacity>
+            <View style={styles.inputContainer}>
+              <IconSymbol name="envelope.fill" size={20} color={colors.textSecondary} />
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                placeholderTextColor={colors.textSecondary}
+              />
+            </View>
 
-          <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>Quick Login (Demo)</Text>
-            <View style={styles.dividerLine} />
-          </View>
+            <View style={styles.inputContainer}>
+              <IconSymbol name="lock.fill" size={20} color={colors.textSecondary} />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                placeholderTextColor={colors.textSecondary}
+              />
+            </View>
 
-          <View style={styles.quickLoginContainer}>
-            <TouchableOpacity 
-              style={styles.quickLoginButton}
-              onPress={() => quickLogin('admin')}
-            >
-              <IconSymbol name="person.badge.key.fill" size={24} color={colors.primary} />
-              <Text style={styles.quickLoginText}>Admin</Text>
+            <TouchableOpacity style={buttonStyles.primary} onPress={handleLogin}>
+              <Text style={commonStyles.buttonText}>Sign In</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={styles.quickLoginButton}
-              onPress={() => quickLogin('tutor')}
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>or</Text>
+              <View style={styles.divider} />
+            </View>
+
+            <TouchableOpacity
+              style={[buttonStyles.outline, styles.createProfileButton]}
+              onPress={() => router.push('/create-profile')}
             >
-              <IconSymbol name="person.fill.checkmark" size={24} color={colors.secondary} />
-              <Text style={styles.quickLoginText}>Tutor</Text>
+              <IconSymbol name="person.badge.plus" size={20} color={colors.primary} />
+              <Text style={[commonStyles.outlineButtonText, { marginLeft: 8 }]}>
+                Create New Profile
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={styles.quickLoginButton}
-              onPress={() => quickLogin('student')}
-            >
-              <IconSymbol name="graduationcap.fill" size={24} color={colors.accent} />
-              <Text style={styles.quickLoginText}>Student</Text>
-            </TouchableOpacity>
+            <View style={styles.quickLoginContainer}>
+              <Text style={styles.quickLoginTitle}>Quick Login (Demo)</Text>
+              <View style={styles.quickLoginButtons}>
+                <TouchableOpacity
+                  style={styles.quickLoginButton}
+                  onPress={() => quickLogin('admin')}
+                >
+                  <IconSymbol name="shield.fill" size={20} color={colors.primary} />
+                  <Text style={styles.quickLoginText}>Admin</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={styles.quickLoginButton}
-              onPress={() => quickLogin('parent')}
-            >
-              <IconSymbol name="person.2.fill" size={24} color={colors.warning} />
-              <Text style={styles.quickLoginText}>Parent</Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.quickLoginButton}
+                  onPress={() => quickLogin('tutor')}
+                >
+                  <IconSymbol name="book.fill" size={20} color={colors.secondary} />
+                  <Text style={styles.quickLoginText}>Tutor</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.quickLoginButton}
+                  onPress={() => quickLogin('student')}
+                >
+                  <IconSymbol name="person.fill" size={20} color={colors.accent} />
+                  <Text style={styles.quickLoginText}>Student</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.quickLoginButton}
+                  onPress={() => quickLogin('parent')}
+                >
+                  <IconSymbol name="person.2.fill" size={20} color={colors.warning} />
+                  <Text style={styles.quickLoginText}>Parent</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Need help? Contact support@matsepe.com
-          </Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -153,101 +152,120 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
-    padding: 24,
   },
-  header: {
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
+  logoContainer: {
     alignItems: 'center',
     marginBottom: 40,
   },
-  logoContainer: {
+  logoCircle: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: colors.card,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
-    boxShadow: `0px 4px 12px ${colors.shadow}`,
-    elevation: 5,
+  },
+  logoText: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  logoSubtext: {
+    fontSize: 18,
+    color: colors.textSecondary,
+    marginTop: 4,
+  },
+  formContainer: {
+    width: '100%',
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: '700',
     color: colors.text,
     marginBottom: 8,
-    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  formContainer: {
-    width: '100%',
-    maxWidth: 400,
-    alignSelf: 'center',
+    marginBottom: 24,
   },
   inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    paddingHorizontal: 12,
     marginBottom: 16,
   },
-  loginButton: {
-    marginTop: 8,
-  },
-  disabledButton: {
-    opacity: 0.6,
+  input: {
+    flex: 1,
+    padding: 12,
+    fontSize: 16,
+    color: colors.text,
+    marginLeft: 8,
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 24,
   },
-  dividerLine: {
+  divider: {
     flex: 1,
     height: 1,
     backgroundColor: colors.border,
   },
   dividerText: {
-    marginHorizontal: 12,
+    marginHorizontal: 16,
     fontSize: 14,
     color: colors.textSecondary,
   },
-  quickLoginContainer: {
+  createProfileButton: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 12,
-  },
-  quickLoginButton: {
-    flex: 1,
-    minWidth: '45%',
-    backgroundColor: colors.card,
-    padding: 16,
-    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: `0px 2px 8px ${colors.shadow}`,
-    elevation: 2,
   },
-  quickLoginText: {
-    marginTop: 8,
+  quickLoginContainer: {
+    marginTop: 32,
+    padding: 16,
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  quickLoginTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.text,
-  },
-  footer: {
-    marginTop: 32,
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 14,
     color: colors.textSecondary,
+    marginBottom: 12,
     textAlign: 'center',
+  },
+  quickLoginButtons: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    justifyContent: 'center',
+  },
+  quickLoginButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    gap: 6,
+  },
+  quickLoginText: {
+    fontSize: 14,
+    color: colors.text,
   },
 });

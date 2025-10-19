@@ -1,5 +1,5 @@
 
-import { Student, Tutor, Class, Attendance, Assessment, Payment } from '@/types';
+import { Student, Tutor, Class, Attendance, Assessment, Payment, ProfileNotification } from '@/types';
 
 export const mockStudents: Student[] = [
   {
@@ -205,5 +205,60 @@ export const mockPayments: Payment[] = [
     date: '2024-03-01',
     type: 'tuition',
     status: 'pending',
+  },
+];
+
+export const mockProfileNotifications: ProfileNotification[] = [
+  {
+    id: '1',
+    type: 'profile_created',
+    role: 'student',
+    userName: 'Zanele Mthembu',
+    userEmail: 'zanele.mthembu@email.com',
+    userPhone: '0824567890',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+    read: false,
+    additionalInfo: {
+      grade: 'Grade 9',
+      subjects: 'Mathematics, English, Life Sciences',
+    },
+  },
+  {
+    id: '2',
+    type: 'profile_created',
+    role: 'tutor',
+    userName: 'David Mokoena',
+    userEmail: 'david.mokoena@email.com',
+    userPhone: '0835678901',
+    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
+    read: false,
+    additionalInfo: {
+      qualifications: 'BSc Mathematics, 3 years teaching experience',
+      subjects: 'Mathematics, Physical Science',
+    },
+  },
+  {
+    id: '3',
+    type: 'profile_created',
+    role: 'parent',
+    userName: 'Patricia Ndlovu',
+    userEmail: 'patricia.ndlovu@email.com',
+    userPhone: '0826789012',
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+    read: true,
+  },
+  {
+    id: '4',
+    type: 'profile_created',
+    role: 'student',
+    userName: 'Mpho Sithole',
+    userEmail: 'mpho.sithole@email.com',
+    userPhone: '0827890123',
+    timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    read: true,
+    additionalInfo: {
+      grade: 'Grade 11',
+      subjects: 'Accounting, Business Studies, Economics',
+    },
   },
 ];
